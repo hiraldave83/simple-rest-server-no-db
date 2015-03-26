@@ -26,7 +26,10 @@
 			margin-top: 20px;
 		}
 		.two{
-			padding-left:18px;
+			padding-left: 18px;
+		}
+		.myBorder{
+			border: 0 ;
 		}
 	</style>
     <!-- Custom styles for this template -->
@@ -120,17 +123,17 @@
     <!--script src="../../assets/js/ie10-viewport-bug-workaround.js"></script-->
 	<script>
 		$(document).ready(function (){
-			console.log("hello");
+			//console.log("hello");
+			
 			$(".myButton").on("click", function(e){
 				console.log(e);
 				e.preventDefault();
-				console.log("hi");
-				var myData = {
+				//console.log("hi");
+				myData = {
 					Item : $(".myItem").val().toUpperCase(),
 					Desc : $(".myDesc").val().toUpperCase(),
 					Price : $(".myPrice").val(),
 				}
-				
 				console.log(myData);
 				$.ajax({
 					url : "/products",
@@ -140,13 +143,31 @@
 					success : function (x){
 						console.log(x);
 						//$(".myDisp").append("<div class='col-md-12 container'><div class='row'><div class='col-md-8 well'><h3>"+ x.Item +"</h3><p>"+ x.Desc +"</p></div><div class='col-md-4 well'><button type='submit' class='btn btn-primary'>"+ x.Price +"</button><span class='glyphicon glyphicon-remove-sign'></span></div></div></div>");
-						$(".myDisp").append("<div class='well main'><div class='row one'><div class='col-md-8'><h3>"+ x.Item +"</h3></div><div class='col-md-2'><button type='submit' class='btn btn-primary'>"+ x.Price +"</button></div><div class='col-md-2'><span class='glyphicon glyphicon-remove-sign'></span></div></div><div class='row two'><p>"+ x.Desc +"</p></div> </div>");
+						$(".myDisp").append("<div class= 'well main'><div class='row one'><div class='col-md-8'><h3>"+ x.Item +"</h3></div><div class='col-md-2'><button type='submit' class='btn btn-primary'>"+ x.Price +"</button></div><div class='col-md-2'><button class='glyphicon glyphicon-remove-sign myBorder' id="+ x.id +"></button></div></div><div class='row two'><p>"+ x.Desc +"</p></div></div>");
 					}
 
 				});
 			});
-			
+
+			$.getJSON("/products", function(data){
+				//console.log(mData);
+				$.each(data, function(i, data){
+					$(".myDisp").append("<div class='well main'><div class='row one'><div class='col-md-8'><h3>"+ data.Item +"</h3></div><div class='col-md-2'><button type='submit' class='btn btn-primary'>"+ data.Price +"</button></div><div class='col-md-2'><button class='glyphicon glyphicon-remove-sign myBorder' id="+ data.id +"></button></div></div><div class='row two'><p>"+ data.Desc +"</p></div></div>");
+				});
+			});
+			$(".myDisp").on("click", ".glyphicon", function(data){
+				$(this).parentsUntil(".myDisp").remove();
+				$.ajax({
+					type: "delete",
+					url: "/products/" + this.id,
+					success: function (){
+						alert("Item Deleted");
+						
+					}
+					
+				});
+			});
 		});
-	</script>
+		</script>
   </body>
 </html>
